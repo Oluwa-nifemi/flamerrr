@@ -1,11 +1,14 @@
 require('dotenv').config()
 
-const express = require('express')
-const errorhandler = require('errorhandler')
 const port = 3000
 const path = require('path')
 const Prismic = require('@prismicio/client');
 const {prismicMiddleware} = require('./prismic')
+
+const express = require('express')
+const errorhandler = require('errorhandler')
+const logger = require('morgan')
+const methodOverride = require('method-override')
 
 const app = express()
 
@@ -13,6 +16,9 @@ if (process.env.NODE_ENV === 'development') {
     // only use in development
     app.use(errorhandler())
 }
+
+app.use(logger('dev'))
+app.use(methodOverride())
 
 const getDefaults = async api => {
     const meta = await api.getSingle('meta')
@@ -66,12 +72,13 @@ app.get('/', (req, res) => {
 })
 
 app.get('/about', async (req, res) => {
-    const meta = await req.api.getSingle('meta')
+    const defaults = await getDefaults(req.api)
     const about = await req.api.getSingle('about')
+    console.log(defaults.navigation)
 
     res.render('about', {
-        meta,
-        about
+        about,
+        ...defaults
     })
 })
 
@@ -91,14 +98,14 @@ app.get('/collections', async (req, res) => {
 })
 
 app.get('/detail/:id', async (req, res) => {
-    const meta = await req.api.getSingle('meta')
+    const defaults = await getDefaults(req.api)
     const product = await req.api.getByUID('product', req.params.id, {
         fetchLinks: 'collection.title',
     })
 
     res.render('detail', {
-        meta,
-        product
+        product,
+        ...defaults
     })
 })
 
