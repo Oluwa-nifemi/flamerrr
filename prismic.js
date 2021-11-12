@@ -10,7 +10,7 @@ const initApi = (req) => {
     });
 }
 
-const middleware = (req, res, next) => {
+const prismicMiddleware = (req, res, next) => {
     res.locals.ctx = {
         endpoint: process.env.PRISMIC_ACCESS_ENDPOINT,
         linkResolver
@@ -25,4 +25,4 @@ const middleware = (req, res, next) => {
     })
 }
 
-exports.middleware = middleware
+exports.prismicMiddleware = prismicMiddleware

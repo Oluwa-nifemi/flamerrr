@@ -5,7 +5,7 @@ const errorhandler = require('errorhandler')
 const port = 3000
 const path = require('path')
 const Prismic = require('@prismicio/client');
-const {middleware} = require('./prismic')
+const {prismicMiddleware} = require('./prismic')
 
 const app = express()
 
@@ -14,10 +14,50 @@ if (process.env.NODE_ENV === 'development') {
     app.use(errorhandler())
 }
 
-app.use(middleware)
+const getDefaults = async api => {
+    const meta = await api.getSingle('meta')
+    const navigation = await api.getSingle('navigation')
+    const preloader = await api.getSingle('preloader')
+
+    return {
+        meta,
+        navigation,
+        preloader
+    }
+}
+
+const handleLinkResolver = doc => {
+    if (doc.type === 'product') {
+        return `/detail/${doc.slug}`
+    }
+
+    if (doc.type === 'collections') {
+        return '/collections'
+    }
+
+    if (doc.type === 'about') {
+        return '/about'
+    }
+
+    return '/'
+}
+
+app.use(prismicMiddleware)
 
 app.set('views', path.join(__dirname, 'views/pages'))
 app.set('view engine', 'pug')
+
+app.use((req, res, next) => {
+    res.locals.Link = handleLinkResolver
+
+    res.locals.Numbers = index => {
+        const numbers = ['One', 'Two', 'Three', 'Four'];
+
+        return numbers[index] || ''
+    }
+
+    next()
+})
 
 app.get('/', (req, res) => {
     req.api.query(Prismic.Predicates.at('document.type', 'home')).then(data => {
@@ -35,11 +75,19 @@ app.get('/about', async (req, res) => {
     })
 })
 
-app.get('/collection/:id', (req, res) => {
-    req.api.getByUID('collection', req.params.id)
-        .then(data => {
-            res.render('collection')
-        })
+app.get('/collections', async (req, res) => {
+    const defaults = await getDefaults(req.api)
+    const home = await req.api.getSingle('home')
+
+    const { results: collections } = await req.api.query(Prismic.Predicates.at('document.type', 'collection'), {
+        fetchLinks: 'product.image'
+    })
+
+    res.render('collections', {
+        ...defaults,
+        collections,
+        home
+    })
 })
 
 app.get('/detail/:id', async (req, res) => {
@@ -48,7 +96,6 @@ app.get('/detail/:id', async (req, res) => {
         fetchLinks: 'collection.title',
     })
 
-    console.log(product)
     res.render('detail', {
         meta,
         product
