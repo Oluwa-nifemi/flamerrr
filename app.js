@@ -1,10 +1,18 @@
 require('dotenv').config()
+
 const express = require('express')
-const app = express()
+const errorhandler = require('errorhandler')
 const port = 3000
 const path = require('path')
 const Prismic = require('@prismicio/client');
 const {middleware} = require('./prismic')
+
+const app = express()
+
+if (process.env.NODE_ENV === 'development') {
+    // only use in development
+    app.use(errorhandler())
+}
 
 app.use(middleware)
 
@@ -17,17 +25,14 @@ app.get('/', (req, res) => {
     })
 })
 
-app.get('/about', (req, res) => {
-    req.api.query(Prismic.Predicates.any('document.type', ['meta', 'about']))
-        .then(response => {
-            const {results} = response;
-            const [meta, about] = results;
+app.get('/about', async (req, res) => {
+    const meta = await req.api.getSingle('meta')
+    const about = await req.api.getSingle('about')
 
-            res.render('about', {
-                meta,
-                about
-            })
-        })
+    res.render('about', {
+        meta,
+        about
+    })
 })
 
 app.get('/collection/:id', (req, res) => {
@@ -37,8 +42,17 @@ app.get('/collection/:id', (req, res) => {
         })
 })
 
-app.get('/detail/:id', (req, res) => {
-    res.render('detail')
+app.get('/detail/:id', async (req, res) => {
+    const meta = await req.api.getSingle('meta')
+    const product = await req.api.getByUID('product', req.params.id, {
+        fetchLinks: 'collection.title',
+    })
+
+    console.log(product)
+    res.render('detail', {
+        meta,
+        product
+    })
 })
 
 app.listen(port, () => {
