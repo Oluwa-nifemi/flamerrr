@@ -32,42 +32,24 @@ const getDefaults = async api => {
     }
 }
 
-const handleLinkResolver = doc => {
-    if (doc.type === 'product') {
-        return `/detail/${doc.slug}`
-    }
-
-    if (doc.type === 'collections') {
-        return '/collections'
-    }
-
-    if (doc.type === 'about') {
-        return '/about'
-    }
-
-    return '/'
-}
-
 app.use(prismicMiddleware)
 
 app.set('views', path.join(__dirname, 'views/pages'))
 app.set('view engine', 'pug')
 
-app.use((req, res, next) => {
-    res.locals.Link = handleLinkResolver
+app.get('/', async (req, res) => {
+    const api = req.api
+    const defaults = await getDefaults(api)
+    const home = await api.getSingle('home')
 
-    res.locals.Numbers = index => {
-        const numbers = ['One', 'Two', 'Three', 'Four'];
+    const { results: collections } = await api.query(Prismic.Predicates.at('document.type', 'collection'), {
+        fetchLinks: 'product.image'
+    })
 
-        return numbers[index] || ''
-    }
-
-    next()
-})
-
-app.get('/', (req, res) => {
-    req.api.query(Prismic.Predicates.at('document.type', 'home')).then(data => {
-        res.render('home')
+    res.render('home', {
+        ...defaults,
+        collections,
+        home
     })
 })
 
@@ -102,6 +84,7 @@ app.get('/detail/:id', async (req, res) => {
     const product = await req.api.getByUID('product', req.params.id, {
         fetchLinks: 'collection.title',
     })
+    console.log(defaults.navigation)
 
     res.render('detail', {
         product,
