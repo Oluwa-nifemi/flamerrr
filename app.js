@@ -32,7 +32,10 @@ const getDefaults = async api => {
     }
 }
 
+
 app.use(prismicMiddleware)
+app.use(express.static(path.join(__dirname, 'public')))
+
 
 app.set('views', path.join(__dirname, 'views/pages'))
 app.set('view engine', 'pug')
@@ -56,7 +59,6 @@ app.get('/', async (req, res) => {
 app.get('/about', async (req, res) => {
     const defaults = await getDefaults(req.api)
     const about = await req.api.getSingle('about')
-    console.log(defaults.navigation)
 
     res.render('about', {
         about,
@@ -84,7 +86,6 @@ app.get('/detail/:id', async (req, res) => {
     const product = await req.api.getByUID('product', req.params.id, {
         fetchLinks: 'collection.title',
     })
-    console.log(defaults.navigation)
 
     res.render('detail', {
         product,

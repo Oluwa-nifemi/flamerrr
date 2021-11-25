@@ -1,0 +1,20 @@
+@import "utils/mixins";
+@import "utils/functions";
+@import "utils/responsive";
+@import "utils/variables";
+@import "utils/vendors";
+
+@import "pages/about/about";
+@import "pages/about/highlight";
+@import "pages/about/gallery";
+@import "pages/about/content";
+
+@import "pages/home/home";
+
+@import "pages/collections/collections";
+
+@import "pages/detail/detail";
+
+@import "base/reset";
+@import "base/fonts";
+@import "base/base";
