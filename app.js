@@ -12,13 +12,11 @@ const methodOverride = require('method-override')
 
 const app = express()
 
-if (process.env.NODE_ENV === 'development') {
-    // only use in development
-    app.use(errorhandler())
-}
-
+app.use(errorhandler())
 app.use(logger('dev'))
 app.use(methodOverride())
+app.use(express.static(path.join(__dirname, 'public')))
+app.use(prismicMiddleware)
 
 const getDefaults = async api => {
     const meta = await api.getSingle('meta')
@@ -31,11 +29,6 @@ const getDefaults = async api => {
         preloader
     }
 }
-
-
-app.use(prismicMiddleware)
-app.use(express.static(path.join(__dirname, 'public')))
-
 
 app.set('views', path.join(__dirname, 'views/pages'))
 app.set('view engine', 'pug')
@@ -70,9 +63,11 @@ app.get('/collections', async (req, res) => {
     const defaults = await getDefaults(req.api)
     const home = await req.api.getSingle('home')
 
-    const { results: collections } = await req.api.query(Prismic.Predicates.at('document.type', 'collection'), {
+    const {results: collections} = await req.api.query(Prismic.Predicates.at('document.type', 'collection'), {
         fetchLinks: 'product.image'
     })
+
+    console.log(collections.data)
 
     res.render('collections', {
         ...defaults,
