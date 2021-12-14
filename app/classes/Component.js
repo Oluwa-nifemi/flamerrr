@@ -1,20 +1,24 @@
 import GSAP from 'gsap'
 
-export default class Page {
+import EventEmitter from "events";
+
+
+export default class Component extends EventEmitter {
     constructor(
         {
-
             element,
             elements,
-            id
         }
     ) {
+        super()
         this.selector = element
         this.selectorChildren = {
             ...elements
         }
 
-        this.id = id
+        this.create()
+
+        this.addEventListeners()
     }
 
     create() {
@@ -30,12 +34,18 @@ export default class Page {
         })
     }
 
+    addEventListeners() {
+
+    }
+
+    removeEventListeners() {
+
+    }
+
     show() {
         return new Promise(resolve => {
-            GSAP.fromTo(this.element, {
+            GSAP.from(this.element, {
                 autoAlpha: 0,
-            }, {
-                autoAlpha: 1,
                 onComplete: resolve
             })
         })

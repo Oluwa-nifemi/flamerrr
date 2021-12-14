@@ -27,3 +27,7 @@
 @import './pages/details/details';
 
 @import './pages/home/home';
+
+.content > div {
+  opacity: 0;
+}
