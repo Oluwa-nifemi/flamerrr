@@ -1,16 +1,12 @@
-import GSAP from 'gsap'
-
-import EventEmitter from "events";
-
+import EventEmitter from 'events'
 
 export default class Component extends EventEmitter {
-    constructor(
-        {
-            element,
-            elements,
-        }
-    ) {
+    constructor({
+                    element,
+                    elements
+                }) {
         super()
+
         this.selector = element
         this.selectorChildren = {
             ...elements
@@ -40,23 +36,5 @@ export default class Component extends EventEmitter {
 
     removeEventListeners() {
 
-    }
-
-    show() {
-        return new Promise(resolve => {
-            GSAP.from(this.element, {
-                autoAlpha: 0,
-                onComplete: resolve
-            })
-        })
-    }
-
-    hide() {
-        return new Promise(resolve => {
-            GSAP.to(this.element, {
-                autoAlpha: 0,
-                onComplete: resolve
-            })
-        })
     }
 }
