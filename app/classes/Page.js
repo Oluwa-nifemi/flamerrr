@@ -1,5 +1,6 @@
 import GSAP from 'gsap'
 import Prefix from 'prefix'
+import NormalizeWheel from 'normalize-wheel'
 
 export default class Page {
   constructor({
@@ -71,9 +72,9 @@ export default class Page {
   }
 
   onMouseWheel(event) {
-    const {deltaY} = event
-    console.log(deltaY)
-    this.scroll.target += deltaY
+    const {pixelY} = NormalizeWheel(event)
+
+    this.scroll.target += pixelY
   }
 
   onResize() {
