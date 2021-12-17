@@ -1,6 +1,7 @@
 import GSAP from 'gsap'
 import Prefix from 'prefix'
 import NormalizeWheel from 'normalize-wheel'
+import Title from "./Title";
 
 export default class Page {
   constructor({
@@ -18,6 +19,14 @@ export default class Page {
     this.transformPrefix = Prefix('transform')
 
     this.onMouseWheelEvent = this.onMouseWheel.bind(this)
+
+    this.setupAnimations()
+  }
+
+  setupAnimations() {
+    this.pageTitles = [...document.querySelectorAll('[data-animation="title"]')].map(title => {
+      return new Title({element: title})
+    })
   }
 
   create() {
