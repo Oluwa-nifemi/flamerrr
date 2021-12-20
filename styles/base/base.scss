@@ -57,4 +57,8 @@ img {
   > span {
     overflow: hidden;
   }
+
+  span span {
+    transform: translateY(100%);
+  }
 }

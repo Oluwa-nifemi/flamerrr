@@ -67,8 +67,6 @@ app.get('/collections', async (req, res) => {
         fetchLinks: 'product.image'
     })
 
-    console.log(collections.data)
-
     res.render('collections', {
         ...defaults,
         collections,

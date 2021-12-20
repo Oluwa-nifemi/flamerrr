@@ -2,6 +2,8 @@ import GSAP from 'gsap'
 import Prefix from 'prefix'
 import NormalizeWheel from 'normalize-wheel'
 import Title from "./Title";
+import Paragraph from "./Paragraph";
+import Label from "./Label";
 
 export default class Page {
   constructor({
@@ -11,7 +13,23 @@ export default class Page {
               }) {
     this.selector = element
     this.selectorChildren = {
-      ...elements
+      ...elements,
+      animationsTitles: {
+        selector: '[data-animation="title"]',
+        getAll: true
+      },
+      animationsLabels: {
+        selector: '[data-animation="label"]',
+        getAll: true
+      },
+      animationsParagraphs: {
+        selector: '[data-animation="paragraph"]',
+        getAll: true
+      },
+      animationsHighlights: {
+        selector: '[data-animation="highlights"]',
+        getAll: true
+      },
     }
 
     this.id = id
@@ -22,14 +40,22 @@ export default class Page {
   }
 
   setupAnimations() {
-    this.animations = [...document.querySelectorAll('[data-animation="title"]')].map(title => {
-      return new Title({element: title})
-    })
+    this.animations = []
+
+    const titleAnimations = this.elements.animationsTitles.map(title => new Title({element: title}))
+
+    this.animations = this.animations.concat(titleAnimations)
+
+    const paragraphAnimations = this.elements.animationsParagraphs.map(paragraph => new Paragraph({element: paragraph}))
+
+    this.animations = this.animations.concat(paragraphAnimations)
+
+    const labelAnimations = this.elements.animationsLabels.map(label => new Label({element: label}))
+
+    this.animations = this.animations.concat(labelAnimations)
   }
 
   create() {
-    this.setupAnimations()
-
     this.element = document.querySelector(this.selector)
     this.elements = {}
 
@@ -41,12 +67,16 @@ export default class Page {
     }
 
     Object.entries(this.selectorChildren).forEach(([key, entry]) => {
-      if (entry instanceof window.HTMLElement || entry instanceof window.NodeList || Array.isArray(entry)) {
+      if (entry.getAll) {
+        this.elements[key] = [...document.querySelectorAll(entry.selector)] || null
+      } else if (entry instanceof window.HTMLElement || entry instanceof window.NodeList || Array.isArray(entry)) {
         this.elements[key] = entry
       } else {
         this.elements[key] = document.querySelector(entry) || null
       }
     })
+
+    this.setupAnimations()
   }
 
   show() {
