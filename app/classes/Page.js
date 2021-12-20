@@ -19,17 +19,17 @@ export default class Page {
     this.transformPrefix = Prefix('transform')
 
     this.onMouseWheelEvent = this.onMouseWheel.bind(this)
-
-    this.setupAnimations()
   }
 
   setupAnimations() {
-    this.pageTitles = [...document.querySelectorAll('[data-animation="title"]')].map(title => {
+    this.animations = [...document.querySelectorAll('[data-animation="title"]')].map(title => {
       return new Title({element: title})
     })
   }
 
   create() {
+    this.setupAnimations()
+
     this.element = document.querySelector(this.selector)
     this.elements = {}
 

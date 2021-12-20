@@ -18,7 +18,7 @@ export default class Animation extends Component {
             } else {
                 this.animateOut()
             }
-        }, {threshold: 0.5});
+        });
 
         this.observer.observe(this.element)
     }

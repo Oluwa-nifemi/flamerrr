@@ -46,3 +46,15 @@ img {
 .content {
   @extend %cover;
 }
+
+[data-animation="title"],
+[data-animation="label"],
+[data-animation="paragraph"] {
+  span {
+    display: inline-block;
+  }
+
+  > span {
+    overflow: hidden;
+  }
+}
