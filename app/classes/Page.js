@@ -34,6 +34,8 @@ export default class Page {
         this.onMouseWheelEvent = this.onMouseWheel.bind(this)
     }
 
+
+    //Create and setup
     setupAnimations() {
         this.animations = []
 
@@ -84,8 +86,13 @@ export default class Page {
     }
 
     createLazyLoaders() {
-        this.images = this.elements.images.map(image => new AsyncLoad({element: image}))
+        if (this.elements.images) {
+            //Concat for pages with only one image
+            this.images = [].concat(this.elements.images).map(image => new AsyncLoad({element: image}))
+        }
     }
+
+    //Animations
 
     show() {
         return new Promise(resolve => {
@@ -112,7 +119,7 @@ export default class Page {
 
     hide() {
         return new Promise(resolve => {
-            this.removeEventListeners()
+            this.destroy()
 
             this.animationOut = GSAP.timeline()
 
@@ -122,6 +129,8 @@ export default class Page {
             })
         })
     }
+
+    //Event listeners
 
     onMouseWheel(event) {
         const {pixelY} = NormalizeWheel(event)
@@ -135,6 +144,8 @@ export default class Page {
         }
     }
 
+
+    //Loops
     update() {
         this.scroll.target = GSAP.utils.clamp(0, this.scroll.limit, this.scroll.target)
 
@@ -149,11 +160,18 @@ export default class Page {
         }
     }
 
+
+    //Remove event listeners
     addEventListeners() {
         window.addEventListener('mousewheel', this.onMouseWheelEvent)
     }
 
     removeEventListeners() {
         window.removeEventListener('mousewheel', this.onMouseWheelEvent)
+    }
+
+    //Destroy
+    destroy() {
+        this.removeEventListeners()
     }
 }
