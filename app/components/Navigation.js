@@ -16,7 +16,6 @@ export default class Navigation extends Component {
     }
 
     onChange(template) {
-        console.log(template, this.element, this.elements)
         if (template === 'about') {
             GSAP.to(this.element, {
                 color: COLOR_BRIGHT_GRAY,
