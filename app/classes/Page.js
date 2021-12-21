@@ -5,6 +5,7 @@ import Title from "./Title";
 import Paragraph from "./Paragraph";
 import Label from "./Label";
 import Highlight from "./Highlight";
+import {ColorManager} from "./Color";
 
 export default class Page {
   constructor({
@@ -31,22 +32,21 @@ export default class Page {
   setupAnimations() {
     this.animations = []
 
-    const titleAnimations = this.elements.animationsTitles.map(title => new Title({element: title}))
+    const titleAnimations = this.elements.animationsTitles?.map(title => new Title({element: title}))
 
-      this.animations = this.animations.concat(titleAnimations)
+    this.animations = this.animations.concat(titleAnimations)
 
-      const paragraphAnimations = this.elements.animationsParagraphs.map(paragraph => new Paragraph({element: paragraph}))
+    const paragraphAnimations = this.elements.animationsParagraphs?.map(paragraph => new Paragraph({element: paragraph}))
 
-      this.animations = this.animations.concat(paragraphAnimations)
+    this.animations = this.animations.concat(paragraphAnimations)
 
-      const labelAnimations = this.elements.animationsLabels.map(label => new Label({element: label}))
+    const labelAnimations = this.elements.animationsLabels?.map(label => new Label({element: label}))
 
-      this.animations = this.animations.concat(labelAnimations)
+    this.animations = this.animations.concat(labelAnimations)
 
+    const highlightAnimations = this.elements.animationsHighlights?.map(label => new Highlight({element: label}))
 
-      const highlightAnimations = this.elements.animationsHighlights.map(label => new Highlight({element: label}))
-
-      this.animations = this.animations.concat(highlightAnimations)
+    this.animations = this.animations.concat(highlightAnimations)
   }
 
   create() {
@@ -74,13 +74,16 @@ export default class Page {
         }
     })
 
-      console.log(this.elements)
-
       this.setupAnimations()
   }
 
   show() {
     return new Promise(resolve => {
+      ColorManager.change({
+        color: this.element.getAttribute('data-color'),
+        backgroundColor: this.element.getAttribute('data-bg-color')
+      })
+
       this.animationIn = GSAP.timeline()
 
       this.animationIn.fromTo(this.element, {

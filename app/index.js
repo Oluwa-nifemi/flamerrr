@@ -6,17 +6,25 @@ import About from 'pages/About'
 import Collections from 'pages/Collections'
 import Detail from 'pages/Detail'
 import Home from 'pages/Home'
+import Navigation from "./classes/Navigation";
 
 class App {
   constructor() {
     this.createPreloader()
     this.createContent()
+    this.createNavigation()
     this.createPages()
 
     this.addEventListeners()
     this.addLinkListeners()
 
     this.update()
+  }
+
+  createNavigation() {
+    this.navigation = new Navigation({
+      template: this.template
+    })
   }
 
   createPreloader() {
@@ -67,6 +75,8 @@ class App {
 
       //Get new template and set content div's template id to new template
       this.template = divContent.getAttribute('data-template')
+
+      this.navigation.onChange(this.template)
 
       this.content.setAttribute('data-template', this.template)
       this.content.innerHTML = divContent.innerHTML
