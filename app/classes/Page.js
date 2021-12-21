@@ -1,10 +1,10 @@
 import GSAP from 'gsap'
 import Prefix from 'prefix'
 import NormalizeWheel from 'normalize-wheel'
-import Title from "./Title";
-import Paragraph from "./Paragraph";
-import Label from "./Label";
-import Highlight from "./Highlight";
+import Title from "../animations/Title";
+import Paragraph from "../animations/Paragraph";
+import Label from "../animations/Label";
+import Highlight from "../animations/Highlight";
 import {ColorManager} from "./Color";
 
 export default class Page {

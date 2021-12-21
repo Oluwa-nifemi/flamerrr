@@ -1,4 +1,4 @@
-import Component from "./Component";
+import Component from "../classes/Component";
 import GSAP from "gsap";
 import {COLOR_BRIGHT_GRAY, COLOR_QUARTER_SPANISH_WHITE} from "../utils/colors";
 

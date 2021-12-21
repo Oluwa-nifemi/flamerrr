@@ -1,4 +1,4 @@
-import Animation from "./Animation";
+import Animation from "../components/Animation";
 import GSAP from "gsap";
 import {calculate, split} from "../utils/text";
 

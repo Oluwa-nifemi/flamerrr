@@ -1,8 +1,8 @@
-import Animation from "./Animation";
+import Animation from "../components/Animation";
 import GSAP from "gsap";
 import {calculate, split} from "../utils/text";
 
-export default class Title extends Animation {
+export default class Paragraph extends Animation {
     constructor(
         {
             element,
@@ -14,11 +14,11 @@ export default class Title extends Animation {
             elements
         });
 
-        split({element: this.element})
-        split({element: this.element})
+        split({element: this.element, expression: ' '})
+        split({element: this.element, expression: ' '})
 
-        this.titleSpans = this.element.querySelectorAll('span span');
-        this.titleLines = calculate(this.titleSpans);
+        this.paragraphSpans = this.element.querySelectorAll('span span');
+        this.paragraphLines = calculate(this.paragraphSpans);
 
         window.addEventListener('resize', () => this.onResize())
     }
@@ -30,13 +30,15 @@ export default class Title extends Animation {
 
         timeline.set(this.element, {autoAlpha: 1})
 
-        this.titleLines.forEach((line, index) => {
+        this.paragraphLines.forEach((line, index) => {
             timeline.fromTo(
                 line,
                 {
+                    autoAlpha: 0,
                     y: '100%',
                 },
                 {
+                    autoAlpha: 1,
                     y: 0,
                     delay: index * 0.2,
                     duration: 1,
@@ -51,6 +53,6 @@ export default class Title extends Animation {
     }
 
     onResize() {
-        this.titleLines = calculate(this.titleSpans);
+        this.paragraphLines = calculate(this.paragraphSpans);
     }
 }

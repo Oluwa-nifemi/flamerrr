@@ -6,7 +6,7 @@ import About from 'pages/About'
 import Collections from 'pages/Collections'
 import Detail from 'pages/Detail'
 import Home from 'pages/Home'
-import Navigation from "./classes/Navigation";
+import Navigation from "./components/Navigation";
 
 class App {
   constructor() {
