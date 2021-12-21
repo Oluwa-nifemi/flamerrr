@@ -4,6 +4,7 @@ import NormalizeWheel from 'normalize-wheel'
 import Title from "./Title";
 import Paragraph from "./Paragraph";
 import Label from "./Label";
+import Highlight from "./Highlight";
 
 export default class Page {
   constructor({
@@ -13,23 +14,11 @@ export default class Page {
               }) {
     this.selector = element
     this.selectorChildren = {
-      ...elements,
-      animationsTitles: {
-        selector: '[data-animation="title"]',
-        getAll: true
-      },
-      animationsLabels: {
-        selector: '[data-animation="label"]',
-        getAll: true
-      },
-      animationsParagraphs: {
-        selector: '[data-animation="paragraph"]',
-        getAll: true
-      },
-      animationsHighlights: {
-        selector: '[data-animation="highlights"]',
-        getAll: true
-      },
+        ...elements,
+        animationsTitles: '[data-animation="title"]',
+        animationsLabels: '[data-animation="label"]',
+        animationsParagraphs: '[data-animation="paragraph"]',
+        animationsHighlights: '[data-animation="highlight"]',
     }
 
     this.id = id
@@ -44,15 +33,20 @@ export default class Page {
 
     const titleAnimations = this.elements.animationsTitles.map(title => new Title({element: title}))
 
-    this.animations = this.animations.concat(titleAnimations)
+      this.animations = this.animations.concat(titleAnimations)
 
-    const paragraphAnimations = this.elements.animationsParagraphs.map(paragraph => new Paragraph({element: paragraph}))
+      const paragraphAnimations = this.elements.animationsParagraphs.map(paragraph => new Paragraph({element: paragraph}))
 
-    this.animations = this.animations.concat(paragraphAnimations)
+      this.animations = this.animations.concat(paragraphAnimations)
 
-    const labelAnimations = this.elements.animationsLabels.map(label => new Label({element: label}))
+      const labelAnimations = this.elements.animationsLabels.map(label => new Label({element: label}))
 
-    this.animations = this.animations.concat(labelAnimations)
+      this.animations = this.animations.concat(labelAnimations)
+
+
+      const highlightAnimations = this.elements.animationsHighlights.map(label => new Highlight({element: label}))
+
+      this.animations = this.animations.concat(highlightAnimations)
   }
 
   create() {
@@ -67,16 +61,22 @@ export default class Page {
     }
 
     Object.entries(this.selectorChildren).forEach(([key, entry]) => {
-      if (entry.getAll) {
-        this.elements[key] = [...document.querySelectorAll(entry.selector)] || null
-      } else if (entry instanceof window.HTMLElement || entry instanceof window.NodeList || Array.isArray(entry)) {
-        this.elements[key] = entry
-      } else {
-        this.elements[key] = document.querySelector(entry) || null
-      }
+        if (entry instanceof window.HTMLElement || entry instanceof window.NodeList || Array.isArray(entry)) {
+            this.elements[key] = entry
+        } else {
+            this.elements[key] = [...document.querySelectorAll(entry)]
+
+            if (this.elements[key].length === 0) {
+                this.elements[key] = null
+            } else if (this.elements[key].length === 1) {
+                this.elements[key] = this.elements[key][0]
+            }
+        }
     })
 
-    this.setupAnimations()
+      console.log(this.elements)
+
+      this.setupAnimations()
   }
 
   show() {
