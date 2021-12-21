@@ -60,7 +60,7 @@ class App {
     this.page.show()
   }
 
-  async onChange(url) {
+  async onChange({url, push = true}) {
     await this.page.hide()
 
     const request = await window.fetch(url)
@@ -68,6 +68,10 @@ class App {
     if (request.status === 200) {
       const html = await request.text()
       const div = document.createElement('div')
+
+      if (push) {
+        window.history.pushState({}, '', url)
+      }
 
       div.innerHTML = html
 
@@ -94,10 +98,17 @@ class App {
     }
   }
 
+  /*
+  * Event listeners
+  * */
   onResize() {
     if (this.page && this.page.onResize) {
       this.page.onResize()
     }
+  }
+
+  onPopState() {
+    return this.onChange({url: window.location.pathname, push: false})
   }
 
   /**
@@ -112,9 +123,10 @@ class App {
   }
 
   /***
-   * Listeners.
+   * Setup listeners
    */
   addEventListeners() {
+    window.addEventListener('popstate', this.onPopState.bind(this))
     window.addEventListener('resize', this.onResize.bind(this))
   }
 
@@ -127,7 +139,7 @@ class App {
 
         const {href} = link
 
-        this.onChange(href)
+        this.onChange({url: href})
       }
     })
   }
