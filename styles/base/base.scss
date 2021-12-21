@@ -41,6 +41,12 @@ button {
 
 img {
   vertical-align: middle;
+  opacity: 0;
+  transition: 300ms;
+
+  &.is-loaded {
+    opacity: 1;
+  }
 }
 
 .content {
