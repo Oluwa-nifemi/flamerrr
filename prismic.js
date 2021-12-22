@@ -1,5 +1,6 @@
 const PrismicDOM = require('prismic-dom');
 const Prismic = require('@prismicio/client');
+const UAParser = require('ua-parser-js');
 
 const linkResolver = () => '/'
 
@@ -27,6 +28,10 @@ const handleLinkResolver = doc => {
 }
 
 const prismicMiddleware = (req, res, next) => {
+    const parser = UAParser(req.headers['user-agent']);
+
+    res.locals.deviceType = parser.device.type || 'desktop';
+
     res.locals.ctx = {
         endpoint: process.env.PRISMIC_ACCESS_ENDPOINT,
         linkResolver
