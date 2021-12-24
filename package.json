@@ -24,9 +24,11 @@
     "nodemon": "^2.0.7",
     "normalize-wheel": "^1.0.1",
     "npm-run-all": "^4.1.5",
+    "ogl": "^0.0.77",
     "prefix": "^1.0.0",
     "prismic-dom": "^2.2.5",
     "pug": "^3.0.2",
+    "raw-loader": "^4.0.2",
     "ua-parser-js": "^1.0.2"
   },
   "devDependencies": {

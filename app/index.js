@@ -7,6 +7,7 @@ import Collections from 'pages/Collections'
 import Detail from 'pages/Detail'
 import Home from 'pages/Home'
 import Navigation from "./components/Navigation";
+import Canvas from "./components/Canvas";
 
 class App {
   constructor() {
@@ -14,6 +15,7 @@ class App {
     this.createContent()
     this.createNavigation()
     this.createPages()
+    this.createCanvas()
 
     this.addEventListeners()
     this.addLinkListeners()
@@ -47,6 +49,10 @@ class App {
 
     this.page = this.pages[this.template]
     this.page.create()
+  }
+
+  createCanvas() {
+    this.canvas = new Canvas();
   }
 
   /**
@@ -105,6 +111,10 @@ class App {
     if (this.page && this.page.onResize) {
       this.page.onResize()
     }
+
+    if (this.canvas && this.canvas.onResize) {
+      this.canvas.onResize()
+    }
   }
 
   onPopState() {
@@ -117,6 +127,10 @@ class App {
   update() {
     if (this.page && this.page.update) {
       this.page.update()
+    }
+
+    if (this.canvas && this.canvas.update) {
+      this.canvas.update()
     }
 
     this.frame = window.requestAnimationFrame(this.update.bind(this))
