@@ -28,4 +28,10 @@ export default class Home {
             })
         })
     }
+
+    onResize(event) {
+        this.sizes = event.sizes
+
+        this.mediaScenes.forEach(media => media.onResize(event))
+    }
 }
