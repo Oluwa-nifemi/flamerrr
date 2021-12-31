@@ -1,13 +1,15 @@
 import {Renderer, Camera, Transform, Box, Mesh, Program} from "ogl";
 import planeFragment from "../../shaders/plane-fragment.glsl";
 import planeVertex from "../../shaders/plane-vertex.glsl";
+import Home from "./Home";
 
 export default class Canvas {
     constructor() {
         this.createRenderer()
         this.createCamera()
         this.createScene()
-        this.createBox()
+        // this.createBox()
+        this.createHome()
     }
 
     createRenderer() {
@@ -30,6 +32,10 @@ export default class Canvas {
         this.scene = new Transform();
     }
 
+    createHome() {
+        this.home = new Home({gl: this.gl, scene: this.scene})
+    }
+
     createBox() {
         this.geometry = new Box(this.gl);
 
@@ -48,8 +54,6 @@ export default class Canvas {
     }
 
     update() {
-        this.mesh.rotation.x += 0.01
-        this.mesh.rotation.y += 0.01
         this.renderer.render({scene: this.scene, camera: this.camera})
     }
 
