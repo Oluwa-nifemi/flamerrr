@@ -90,4 +90,11 @@ export default class Media {
 
         this.mesh.position.y = (this.sizes.height / 2) - (this.mesh.scale.y / 2) - (this.y * this.sizes.height) + this.extra.y
     }
+
+    update(scroll) {
+        if (!this.bounds) return
+
+        this.updateX(scroll.x)
+        this.updateY(scroll.y)
+    }
 }

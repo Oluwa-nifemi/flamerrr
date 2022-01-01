@@ -1,3 +1,5 @@
+import NormalizeWheel from 'normalize-wheel'
+
 import each from 'lodash/each'
 
 import Preloader from 'components/Preloader'
@@ -121,6 +123,37 @@ class App {
     return this.onChange({url: window.location.pathname, push: false})
   }
 
+  onTouchDown(event) {
+    if (this.canvas && this.canvas.onTouchDown) {
+      this.canvas.onTouchDown(event)
+    }
+  }
+
+  onTouchMove(event) {
+    if (this.canvas && this.canvas.onTouchMove) {
+      this.canvas.onTouchMove(event)
+    }
+  }
+
+  onTouchUp(event) {
+    if (this.canvas && this.canvas.onTouchUp) {
+      this.canvas.onTouchUp(event)
+    }
+  }
+
+  onWheel(event) {
+    const normalizedWheel = NormalizeWheel(event)
+
+    if (this.canvas && this.canvas.onWheel) {
+      this.canvas.onWheel(normalizedWheel)
+    }
+
+    if (this.page && this.page.onWheel) {
+      this.page.onWheel(normalizedWheel)
+    }
+  }
+
+
   /**
    * Loop.
    */
@@ -140,7 +173,18 @@ class App {
    * Setup listeners
    */
   addEventListeners() {
+    window.addEventListener('mousewheel', this.onWheel.bind(this))
+
+    window.addEventListener('mousedown', this.onTouchDown.bind(this))
+    window.addEventListener('mousemove', this.onTouchMove.bind(this))
+    window.addEventListener('mouseup', this.onTouchUp.bind(this))
+
+    window.addEventListener('touchstart', this.onTouchDown.bind(this))
+    window.addEventListener('touchmove', this.onTouchMove.bind(this))
+    window.addEventListener('touchend', this.onTouchUp.bind(this))
+
     window.addEventListener('popstate', this.onPopState.bind(this))
+
     window.addEventListener('resize', this.onResize.bind(this))
   }
 
