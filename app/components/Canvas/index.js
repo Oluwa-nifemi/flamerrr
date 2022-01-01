@@ -1,7 +1,7 @@
 import {Renderer, Camera, Transform, Box, Mesh, Program} from "ogl";
 import planeFragment from "../../shaders/plane-fragment.glsl";
 import planeVertex from "../../shaders/plane-vertex.glsl";
-import Home from "./Home/Home";
+import Home from "./Home";
 
 export default class Canvas {
     constructor() {
