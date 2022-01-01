@@ -1,5 +1,5 @@
-import planeFragment from "../../shaders/plane-fragment.glsl";
-import planeVertex from "../../shaders/plane-vertex.glsl";
+import planeFragment from "../../../shaders/plane-fragment.glsl";
+import planeVertex from "../../../shaders/plane-vertex.glsl";
 import {Mesh, Program, Texture} from "ogl";
 
 export default class Media {
