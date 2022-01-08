@@ -1,6 +1,7 @@
 import planeFragment from "../../../shaders/plane-fragment.glsl";
 import planeVertex from "../../../shaders/plane-vertex.glsl";
 import {Mesh, Program, Texture} from "ogl";
+import GSAP from "gsap";
 
 export default class Media {
     constructor({element, gl, scene, index, geometry}) {
@@ -20,6 +21,8 @@ export default class Media {
         }
     }
 
+
+    //Webgl functions
     createTexture() {
         this.texture = new Texture(this.gl);
 
@@ -29,6 +32,7 @@ export default class Media {
             this.texture.image = this.image
         }
 
+        //Anonymous cross origin to allow rendering of image on canvas
         this.image.crossOrigin = 'anonymous'
 
         this.image.src = this.element.getAttribute('data-src')
@@ -62,6 +66,7 @@ export default class Media {
         this.updateY()
     }
 
+    //Event listeners
     onResize({sizes}) {
         this.extra = {
             x: 0,
@@ -71,10 +76,13 @@ export default class Media {
         this.createBounds(sizes)
     }
 
+    //Update functions
     updateScale() {
+        //On resize recalculate height and width percentages relative to window sizes
         this.height = this.bounds.height / window.innerHeight
         this.width = this.bounds.width / window.innerWidth
 
+        //Use width and height percentages to generate the width and height relative to the canvas
         this.mesh.scale.x = this.sizes.width * this.width
         this.mesh.scale.y = this.sizes.height * this.height
     }
@@ -82,12 +90,14 @@ export default class Media {
     updateX(x = 0) {
         this.x = (this.bounds.left + x) / window.innerWidth
 
+        //Move it to the edge of the screen (because cartesian coordinates) + Move the image left by half of it's width + Move the image left by it's coordinates in the gallery + extra used for infinite scroll
         this.mesh.position.x = (-this.sizes.width / 2) + (this.mesh.scale.x / 2) + (this.x * this.sizes.width) + this.extra.x
     }
 
     updateY(y = 0) {
         this.y = (this.bounds.top + y) / window.innerHeight
 
+        //Same calculation as updateX
         this.mesh.position.y = (this.sizes.height / 2) - (this.mesh.scale.y / 2) - (this.y * this.sizes.height) + this.extra.y
     }
 
@@ -96,5 +106,20 @@ export default class Media {
 
         this.updateX(scroll.x)
         this.updateY(scroll.y)
+    }
+
+    //Animations
+    show() {
+        GSAP.fromTo(this.program.uniforms.uAlpha, {
+            value: 0
+        }, {
+            value: 1
+        })
+    }
+
+    hide() {
+        GSAP.to(this.program.uniforms.uAlpha, {
+            value: 0
+        })
     }
 }
