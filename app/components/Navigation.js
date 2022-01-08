@@ -16,6 +16,7 @@ export default class Navigation extends Component {
     }
 
     onChange(template) {
+        //Transition colors based on page
         if (template === 'about') {
             GSAP.to(this.element, {
                 color: COLOR_BRIGHT_GRAY,
