@@ -11,6 +11,7 @@ export default class Button extends Component {
 
         const totalLength = path.getTotalLength();
 
+        //Path animation for button
         this.timeline.fromTo(
             path,
             {
@@ -23,6 +24,7 @@ export default class Button extends Component {
         )
     }
 
+    //Event listeners
     onMouseEnter() {
         this.timeline.play();
     }
@@ -31,6 +33,7 @@ export default class Button extends Component {
         this.timeline.reverse();
     }
 
+    //Setup event listeners
     addEventListeners() {
         this.onMouseEnterEvent = this.onMouseEnter.bind(this)
         this.onMouseLeaveEvent = this.onMouseLeave.bind(this)
