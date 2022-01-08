@@ -7,7 +7,7 @@
     "frontend:build": "webpack --progress --config webpack.config.build.js",
     "backend:build": "node app.js",
     "backend:dev": "nodemon app",
-    "dev": "npm-run-all frontend:build backend:dev"
+    "dev": "concurrently \"npm run frontend:dev\" \"npm run backend:dev\""
   },
   "author": "",
   "license": "ISC",
