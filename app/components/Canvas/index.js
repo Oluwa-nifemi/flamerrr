@@ -1,10 +1,12 @@
-import {Renderer, Camera, Transform, Box, Mesh, Program} from "ogl";
-import planeFragment from "../../shaders/plane-fragment.glsl";
-import planeVertex from "../../shaders/plane-vertex.glsl";
-import Home from "./Home";
+import {Camera, Renderer, Transform} from 'ogl'
+
+import About from './About'
+import Home from './Home'
 
 export default class Canvas {
-    constructor() {
+    constructor({template}) {
+        this.template = template
+
         this.x = {
             start: 0,
             distance: 0,
@@ -20,59 +22,99 @@ export default class Canvas {
         this.createRenderer()
         this.createCamera()
         this.createScene()
-        this.createHome()
 
         this.onResize()
+
+        this.onChangeEnd(this.template)
     }
 
+    //Webgl functions
     createRenderer() {
+        //Setup transparent renderer
         this.renderer = new Renderer({
             alpha: true,
             antialias: true
-        });
+        })
 
-        this.gl = this.renderer.gl;
+        this.gl = this.renderer.gl
 
-        document.documentElement.append(this.gl.canvas)
+        //Attach canvas element to body for displaying items on plane
+        document.body.appendChild(this.gl.canvas)
     }
 
     createCamera() {
-        this.camera = new Camera(this.gl);
-        this.camera.position.z = 5;
-        this.camera.perspective({
-            aspect: window.innerWidth / window.innerHeight
-        })
+        this.camera = new Camera(this.gl)
+        this.camera.position.z = 5
     }
 
     createScene() {
-        this.scene = new Transform();
+        this.scene = new Transform()
     }
 
+    //Page functions functions
     createHome() {
-        this.home = new Home({gl: this.gl, scene: this.scene})
+        this.home = new Home({
+            gl: this.gl,
+            scene: this.scene,
+            sizes: this.sizes
+        })
     }
 
-    createBox() {
-        this.geometry = new Box(this.gl);
+    destroyHome() {
+        if (!this.home) return
 
-        this.program = new Program(this.gl, {
-            vertex: planeVertex,
-            fragment: planeFragment,
+        this.home.destroy()
+        this.home = null
+    }
+
+    createAbout() {
+        this.about = new About({
+            gl: this.gl,
+            scene: this.scene,
+            sizes: this.sizes
         })
+    }
 
-        this.mesh = new Mesh(this.gl, {geometry: this.geometry, program: this.program})
+    destroyAbout() {
+        if (!this.about) return
 
-        this.mesh.setParent(this.scene)
+        this.about.destroy()
+        this.about = null
+    }
+
+    //Events
+    onChangeStart() {
+        if (this.about) {
+            this.about.hide()
+        }
+
+        if (this.home) {
+            this.home.hide()
+        }
+    }
+
+    onChangeEnd(template) {
+        if (template === 'about') {
+            this.createAbout()
+        } else if (this.about) {
+            this.destroyAbout()
+        }
+
+        if (template === 'home') {
+            this.createHome()
+        } else {
+            this.destroyHome()
+        }
     }
 
     onResize() {
         this.renderer.setSize(window.innerWidth, window.innerHeight)
 
-
         this.camera.perspective({
             aspect: window.innerWidth / window.innerHeight
         })
 
+        //Calculate the height of the plan using tan = opposite/adjacent. Some pretty neat math behind the scenes here
         const fov = this.camera.fov * (Math.PI / 180)
         const height = 2 * Math.tan(fov / 2) * this.camera.position.z
         const width = height * this.camera.aspect
@@ -82,10 +124,16 @@ export default class Canvas {
             width
         }
 
+        const values = {
+            sizes: this.sizes
+        }
+
+        if (this.about) {
+            this.about.onResize(values)
+        }
+
         if (this.home) {
-            this.home.onResize({
-                sizes: this.sizes
-            })
+            this.home.onResize(values)
         }
     }
 
@@ -95,45 +143,65 @@ export default class Canvas {
         this.x.start = event.touches ? event.touches[0].clientX : event.clientX
         this.y.start = event.touches ? event.touches[0].clientY : event.clientY
 
+        const values = {
+            x: this.x,
+            y: this.y,
+        }
+
+        if (this.about) {
+            this.about.onTouchDown(values)
+        }
+
         if (this.home) {
-            this.home.onTouchDown({
-                x: this.x,
-                y: this.y
-            })
+            this.home.onTouchDown(values)
         }
     }
 
     onTouchMove(event) {
         if (!this.isDown) return
 
+        //Check if event is a touch or mouse event and extract parameters based don that
         const x = event.touches ? event.touches[0].clientX : event.clientX
         const y = event.touches ? event.touches[0].clientY : event.clientY
 
         this.x.end = x
         this.y.end = y
 
+        const values = {
+            x: this.x,
+            y: this.y,
+        }
+
+        if (this.about) {
+            this.about.onTouchMove(values)
+        }
+
         if (this.home) {
-            this.home.onTouchMove({
-                x: this.x,
-                y: this.y,
-            })
+            this.home.onTouchMove(values)
         }
     }
 
     onTouchUp(event) {
         this.isDown = false
 
+        //Check if event is a touch or mouse event and extract parameters based don that
         const x = event.changedTouches ? event.changedTouches[0].clientX : event.clientX
         const y = event.changedTouches ? event.changedTouches[0].clientY : event.clientY
 
         this.x.end = x
         this.y.end = y
 
+        const values = {
+            x: this.x,
+            y: this.y,
+        }
+
+        if (this.about) {
+            this.about.onTouchUp(values)
+        }
+
         if (this.home) {
-            this.home.onTouchMove({
-                x: this.x,
-                y: this.y,
-            })
+            this.home.onTouchUp(values)
         }
     }
 
@@ -143,7 +211,14 @@ export default class Canvas {
         }
     }
 
-    update() {
+    /**
+     * Loop.
+     */
+    update(scroll) {
+        if (this.about) {
+            this.about.update(scroll)
+        }
+
         if (this.home) {
             this.home.update()
         }
