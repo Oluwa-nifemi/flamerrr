@@ -22,6 +22,7 @@ export default class Preloader extends Component {
             image.src = image.getAttribute('data-src');
         })
 
+        //Split elements inside preloader into spans to allow easy animations
         split({
             element: this.elements.text,
             expression: '<br/>'
@@ -34,12 +35,14 @@ export default class Preloader extends Component {
 
         this.elements.titleSpans = this.elements.text.querySelectorAll('span span')
 
+        //Variable that keeps track of loaded images in order to calculate and display percentage
         this.loadedImages = 0;
     }
 
     onAssetLoaded() {
         this.loadedImages++;
 
+        //Calculate and display percentage of loaded images
         this.percent = Math.round(this.loadedImages * 100 / this.elements.images.length)
 
         this.elements.number.innerHTML = `${this.percent}%`;
@@ -54,19 +57,22 @@ export default class Preloader extends Component {
             onComplete: () => this.emit('completed')
         });
 
+        //Ease out title row by row
         this.animateOut.to(this.elements.titleSpans, {
             y: '100%',
             duration: 1.5,
             ease: 'expo.out',
-            stagger: 0.1
+            stagger: 0.3
         })
 
+        //Ease out number
         this.animateOut.to(this.elements.number, {
             y: '100%',
             duration: 1.5,
             ease: 'expo.out'
         }, '-=1.4')
 
+        //Scale down preloader
         this.animateOut.to(this.element, {
             scaleY: '0',
             transformOrigin: '100% 100%',
