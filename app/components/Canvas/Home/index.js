@@ -1,7 +1,6 @@
 import Media from "./Media";
 import {Plane, Transform} from "ogl";
 import GSAP from "gsap";
-import map from 'lodash/map'
 
 export default class Home {
     constructor({gl, scene}) {
@@ -101,11 +100,11 @@ export default class Home {
 
     //Animations
     show() {
-        map(this.mediaScenes, media => media.show())
+        this.mediaScenes.forEach(media => media.show())
     }
 
     hide() {
-        map(this.mediaScenes, media => media.hide())
+        this.mediaScenes.forEach(media => media.hide())
     }
 
     //Request animation frame loop
