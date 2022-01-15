@@ -2,6 +2,7 @@ import {Camera, Renderer, Transform} from 'ogl'
 
 import About from './About'
 import Home from './Home'
+import Collections from "./Collections";
 
 export default class Canvas {
     constructor({template}) {
@@ -82,6 +83,21 @@ export default class Canvas {
         this.about = null
     }
 
+    createCollections() {
+        this.collections = new Collections({
+            gl: this.gl,
+            scene: this.scene,
+            sizes: this.sizes
+        })
+    }
+
+    destroyCollections() {
+        if (!this.collections) return
+
+        this.collections.destroy()
+        this.collections = null
+    }
+
     //Events
     onChangeStart() {
         if (this.about) {
@@ -91,6 +107,10 @@ export default class Canvas {
         if (this.home) {
             this.home.hide()
         }
+
+        if (this.collections) {
+            this.collections.hide()
+        }
     }
 
     onChangeEnd(template) {
@@ -98,6 +118,12 @@ export default class Canvas {
             this.createAbout()
         } else if (this.about) {
             this.destroyAbout()
+        }
+
+        if (template === 'collections') {
+            this.createCollections()
+        } else if (this.about) {
+            this.destroyCollections()
         }
 
         if (template === 'home') {
@@ -135,6 +161,10 @@ export default class Canvas {
         if (this.home) {
             this.home.onResize(values)
         }
+
+        if (this.collections) {
+            this.collections.onResize(values)
+        }
     }
 
     onTouchDown(event) {
@@ -154,6 +184,10 @@ export default class Canvas {
 
         if (this.home) {
             this.home.onTouchDown(values)
+        }
+
+        if (this.collections) {
+            this.collections.onTouchDown(values)
         }
     }
 
@@ -179,6 +213,10 @@ export default class Canvas {
         if (this.home) {
             this.home.onTouchMove(values)
         }
+
+        if (this.collections) {
+            this.collections.onTouchMove(values)
+        }
     }
 
     onTouchUp(event) {
@@ -203,11 +241,19 @@ export default class Canvas {
         if (this.home) {
             this.home.onTouchUp(values)
         }
+
+        if (this.collections) {
+            this.collections.onTouchUp(values)
+        }
     }
 
     onWheel(event) {
         if (this.home) {
             this.home.onWheel(event)
+        }
+
+        if (this.collections) {
+            this.collections.onWheel(event)
         }
     }
 
@@ -221,6 +267,10 @@ export default class Canvas {
 
         if (this.home) {
             this.home.update()
+        }
+
+        if (this.collections) {
+            this.collections.update()
         }
 
         this.renderer.render({scene: this.scene, camera: this.camera})
