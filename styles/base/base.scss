@@ -17,6 +17,12 @@ html {
   }
 }
 
+canvas {
+  pointer-events: none;
+  position: relative;
+  z-index: z('canvas');
+}
+
 body {
   @extend %cover;
   @extend %description-16;

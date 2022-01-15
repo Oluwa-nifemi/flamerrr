@@ -17,6 +17,9 @@ export default class Collections {
 
         this.group.setParent(scene)
 
+        this.currentMediaElementIndex = 0;
+        this.collectionElements = [...document.querySelectorAll('.collections__article')];
+        this.collectionElementActiveClass = 'collections__article--active'
 
         //Setup values used for scroll calculations
         this.scroll = {
@@ -115,6 +118,26 @@ export default class Collections {
         this.scroll.x = this.scroll.current
 
         this.mediaScenes.forEach((media) => media.update(this.scroll.current))
+
+        //Get the current media element in the center
+        const index = Math.floor(Math.abs(this.scroll.current / this.scroll.limit) * this.mediaElements.length);
+
+        if (this.currentMediaElementIndex !== index) {
+            this.handleElementChange(index)
+        }
+    }
+
+    //On change media element
+    handleElementChange(index) {
+        this.currentMediaElementIndex = index;
+
+        //Hide currently active collection
+        document.querySelector(`.${this.collectionElementActiveClass}`).classList.remove(this.collectionElementActiveClass);
+
+
+        //Show new active collection
+        const activeCollection = this.mediaElements[index].getAttribute('data-collection');
+        this.collectionElements[activeCollection].classList.add(this.collectionElementActiveClass)
     }
 
     destroy() {
