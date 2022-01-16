@@ -32,6 +32,9 @@ html(lang="en")
 
     link(href="main.css" rel="stylesheet")
 
+    script.
+      window.ASSETS = !{JSON.stringify(assets).replace(/<\//g, "<\\/")}
+
   body(class=deviceType)
     include ./partials/preloader
     include ./partials/navigation
