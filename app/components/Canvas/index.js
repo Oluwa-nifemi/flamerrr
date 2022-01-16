@@ -122,13 +122,15 @@ export default class Canvas {
 
         if (template === 'collections') {
             this.createCollections()
-        } else if (this.about) {
+            this.gl.canvas.style.zIndex = '1000'
+        } else if (this.collections) {
+            this.gl.canvas.style.zIndex = ''
             this.destroyCollections()
         }
 
         if (template === 'home') {
             this.createHome()
-        } else {
+        } else if (this.home) {
             this.destroyHome()
         }
     }

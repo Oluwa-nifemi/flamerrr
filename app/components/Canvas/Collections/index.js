@@ -1,6 +1,7 @@
 import Media from "./Media";
 import {Plane, Transform} from "ogl";
 import GSAP from "gsap";
+import Prefix from 'prefix'
 
 export default class Collections {
     constructor({gl, scene}) {
@@ -20,6 +21,10 @@ export default class Collections {
         this.currentMediaElementIndex = 0;
         this.collectionElements = [...document.querySelectorAll('.collections__article')];
         this.collectionElementActiveClass = 'collections__article--active'
+
+        this.titlesElement = document.querySelector('.collections__titles')
+
+        this.transformPrefix = Prefix('transform')
 
         //Setup values used for scroll calculations
         this.scroll = {
@@ -108,6 +113,9 @@ export default class Collections {
         //Interpolate new current based for smooth scroll effect
         this.scroll.current = GSAP.utils.interpolate(this.scroll.current, this.scroll.target, this.scroll.lerp)
 
+        //Move gallery element with webgl canvas to ensure that the links behind the canvas stay clickable and match the positions
+        this.galleryElement.style[this.transformPrefix] = `translateX(${this.scroll.current}px)`
+
         //Derive scroll directions
         if (this.scroll.x < this.scroll.current) {
             this.scroll.direction = 'right'
@@ -138,6 +146,8 @@ export default class Collections {
         //Show new active collection
         const activeCollection = this.mediaElements[index].getAttribute('data-collection');
         this.collectionElements[activeCollection].classList.add(this.collectionElementActiveClass)
+
+        this.titlesElement.style[this.transformPrefix] = `translateY(-${25 * activeCollection}%) translate(-50%, -50%) rotate(-90deg)`
     }
 
     destroy() {
