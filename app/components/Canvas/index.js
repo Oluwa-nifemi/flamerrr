@@ -26,6 +26,9 @@ export default class Canvas {
 
         this.onResize()
 
+    }
+
+    onPreloaded() {
         this.onChangeEnd(this.template)
     }
 

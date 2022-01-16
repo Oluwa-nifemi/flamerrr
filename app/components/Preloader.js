@@ -1,26 +1,27 @@
 import Component from "../classes/Component";
 import GSAP from "gsap";
 import {split} from "../utils/text";
+import {Texture} from "ogl";
 
 export default class Preloader extends Component {
-    constructor() {
+    constructor({canvas}) {
         super({
             element: '.preloader',
             elements: {
                 number: '.preloader__number__text',
                 text: '.preloader__text',
-                images: document.querySelectorAll('img')
             }
         });
+
+        this.canvas = canvas
+
+        window.TEXTURES = {}
+
+        this.createLoader()
     }
 
     create() {
-        super.create();
-
-        this.elements.images.forEach(image => {
-            image.onload = () => this.onAssetLoaded(image)
-            image.src = image.getAttribute('data-src');
-        })
+        super.create()
 
         //Split elements inside preloader into spans to allow easy animations
         split({
@@ -39,11 +40,34 @@ export default class Preloader extends Component {
         this.loadedImages = 0;
     }
 
+    createLoader() {
+        //Preload images onto GPU
+        window.ASSETS.forEach(imageUrl => {
+            const texture = new Texture(this.canvas.gl, {
+                generateMipmaps: true
+            })
+
+            const image = new Image();
+
+            image.crossOrigin = 'anonymous'
+
+            image.onload = () => {
+                texture.image = image;
+
+                window.TEXTURES[imageUrl] = texture;
+
+                this.onAssetLoaded()
+            }
+
+            image.src = imageUrl
+        })
+    }
+
     onAssetLoaded() {
         this.loadedImages++;
 
         //Calculate and display percentage of loaded images
-        this.percent = Math.round(this.loadedImages * 100 / this.elements.images.length)
+        this.percent = Math.round(this.loadedImages * 100 / window.ASSETS.length)
 
         this.elements.number.innerHTML = `${this.percent}%`;
 
