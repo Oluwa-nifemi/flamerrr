@@ -24,20 +24,8 @@ export default class Media {
 
     //Webgl functions
     createTexture() {
-        this.texture = new Texture(this.gl);
-
         const image = this.element.querySelector('img');
-
-        this.image = new Image();
-
-        this.image.onload = () => {
-            this.texture.image = this.image
-        }
-
-        //Anonymous cross origin to allow rendering of image on canvas
-        this.image.crossOrigin = 'anonymous'
-
-        this.image.src = image.getAttribute('data-src')
+        this.texture = window.TEXTURES[image.getAttribute('data-src')];
     }
 
     createProgram() {

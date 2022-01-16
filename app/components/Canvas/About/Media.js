@@ -25,14 +25,8 @@ export default class Media {
 
     //Webgl setup
     createTexture() {
-        this.texture = new Texture(this.gl)
-
-        const image = this.element.querySelector('img')
-
-        this.image = new window.Image()
-        this.image.crossOrigin = 'anonymous'
-        this.image.src = image.getAttribute('data-src')
-        this.image.onload = _ => (this.texture.image = this.image)
+        const image = this.element.querySelector('img');
+        this.texture = window.TEXTURES[image.getAttribute('data-src')];
     }
 
     createProgram() {

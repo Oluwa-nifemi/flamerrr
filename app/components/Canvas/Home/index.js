@@ -5,7 +5,7 @@ import GSAP from "gsap";
 export default class Home {
     constructor({gl, scene}) {
         this.galleryElement = document.querySelector('.home__gallery')
-        this.mediasElements = [...document.querySelectorAll('.home__gallery__media__image')];
+        this.mediasElements = [...document.querySelectorAll('.home__gallery__media')];
 
         this.gl = gl;
         this.group = new Transform();
