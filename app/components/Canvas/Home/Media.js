@@ -1,4 +1,4 @@
-import planeFragment from "../../../shaders/plane-fragment.glsl";
+import planeFragment from "../../../shaders/home-fragment.glsl";
 import planeVertex from "../../../shaders/plane-vertex.glsl";
 import {Mesh, Program, Texture} from "ogl";
 import GSAP from "gsap";
@@ -33,7 +33,8 @@ export default class Media {
             vertex: planeVertex,
             fragment: planeFragment,
             uniforms: {
-                tMap: {value: this.texture}
+                tMap: {value: this.texture},
+                uAlpha: {value: 0.4}
             }
         })
     }
@@ -103,7 +104,7 @@ export default class Media {
         GSAP.fromTo(this.program.uniforms.uAlpha, {
             value: 0
         }, {
-            value: 1
+            value: 0.4
         })
     }
 
