@@ -95,7 +95,7 @@ export default class Media {
         if (!this.bounds) return
 
         this.updateX(scroll)
-        // this.updateY(scroll.y)
+        this.updateY()
     }
 
     //Animations

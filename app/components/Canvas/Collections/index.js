@@ -125,7 +125,11 @@ export default class Collections {
 
         this.scroll.x = this.scroll.current
 
-        this.mediaScenes.forEach((media) => media.update(this.scroll.current))
+        this.mediaScenes.forEach((media) => {
+            media.update(this.scroll.current)
+
+            media.mesh.position.y += Math.cos((media.mesh.position.x / this.sizes.width) * Math.PI * 0.1) * 75 - 75
+        })
 
         //Get the current media element in the center
         const index = Math.floor(Math.abs(this.scroll.current / this.scroll.limit) * this.mediaElements.length);
