@@ -89,7 +89,7 @@ export default class Media {
     updateX(x = 0) {
         this.x = (this.bounds.left + x) / window.innerWidth
 
-        //Move it to the edge of the screen (because cartesian coordinates) + Move the image left by half of it's width + Move the image left by it's coordinates in the gallery + extra used for infinite scroll
+        //Move it to the edge of the screen (because cartesian coordinates) + Move the image left by half of its width + Move the image left by its coordinates in the gallery + extra used for infinite scroll
         this.mesh.position.x = (-this.sizes.width / 2) + (this.mesh.scale.x / 2) + (this.x * this.sizes.width) + this.extra.x
     }
 
@@ -103,7 +103,7 @@ export default class Media {
     update(scroll, speed) {
         if (!this.bounds) return
 
-        this.updateX(scroll.x)
+        this.updateX()
         this.updateY(scroll.y)
 
         this.program.uniforms.uSpeed.value = speed;

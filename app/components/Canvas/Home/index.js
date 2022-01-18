@@ -19,12 +19,6 @@ export default class Home {
 
 
         //Setup values used for scroll calculations
-        this.x = {
-            current: 0,
-            target: 0,
-            lerp: 0.1
-        }
-
         this.y = {
             current: 0,
             target: 0,
@@ -86,16 +80,13 @@ export default class Home {
 
     onTouchDown() {
         //Save current scroll position when user touches canvas
-        this.scrollCurrent.x = this.scroll.x
         this.scrollCurrent.y = this.scroll.y
     }
 
     onTouchMove({x, y}) {
-        const xDistance = x.end - x.start
         const yDistance = y.end - y.start
 
         //Calculate new target using initial scroll position + distance dragged
-        this.x.target = this.scrollCurrent.x + xDistance
         this.y.target = this.scrollCurrent.y + yDistance
     }
 
@@ -103,9 +94,8 @@ export default class Home {
 
     }
 
-    onWheel({pixelX, pixelY}) {
+    onWheel({pixelY}) {
         //Calculate new target based on distance scrolled
-        this.x.target += pixelX
         this.y.target += pixelY
     }
 
@@ -129,15 +119,7 @@ export default class Home {
         this.speed.current = GSAP.utils.interpolate(this.speed.current, this.speed.target, this.speed.lerp)
 
         //Interpolate new current based for smooth scroll effect
-        this.x.current = GSAP.utils.interpolate(this.x.current, this.x.target, this.x.lerp)
         this.y.current = GSAP.utils.interpolate(this.y.current, this.y.target, this.y.lerp)
-
-        //Derive scroll directions
-        if (this.scroll.x < this.x.current) {
-            this.x.direction = 'right'
-        } else if (this.scroll.x > this.x.current) {
-            this.x.direction = 'left'
-        }
 
         if (this.scroll.y < this.y.current) {
             this.y.direction = 'top'
@@ -145,34 +127,10 @@ export default class Home {
             this.y.direction = 'bottom'
         }
 
-        this.scroll.x = this.x.current
         this.scroll.y = this.y.current
 
         this.mediaScenes.forEach((media) => {
             //Get half of element relative to canvas
-            const scaleX = media.mesh.scale.x / 2
-
-            if (this.x.direction === 'left') {
-                //Derive right edge of media element
-                const x = media.mesh.position.x + scaleX
-
-                //If the right edge of the media element is outside the canvas from the left
-                // then move the media element to the right of the canvas to give the illusion of infinity : )
-                if (x < -this.sizes.width / 2) {
-                    media.extra.x += this.gallerySizes.width
-                }
-
-            } else if (this.x.direction === 'right') {
-                //Derive left edge of media element
-                const x = media.mesh.position.x - scaleX
-
-                //If the left edge of the media element is outside the canvas from the right
-                // then move the media element to the left of the canvas to give the illusion of infinity
-                if (x > this.sizes.width / 2) {
-                    media.extra.x -= this.gallerySizes.width
-                }
-            }
-
             const scaleY = media.mesh.scale.y / 2
 
             if (this.y.direction === 'top') {
