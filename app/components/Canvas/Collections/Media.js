@@ -1,24 +1,26 @@
-import planeFragment from "../../../shaders/plane-fragment.glsl";
+import planeFragment from "../../../shaders/home-fragment.glsl";
 import planeVertex from "../../../shaders/plane-vertex.glsl";
-import {Mesh, Program, Texture} from "ogl";
+import {Mesh, Program} from "ogl";
 import GSAP from "gsap";
 
 export default class Media {
-    constructor({element, gl, scene, index, geometry}) {
+    constructor({element, gl, scene, index, geometry, sizes}) {
         this.element = element;
         this.gl = gl;
         this.scene = scene;
         this.geometry = geometry;
         this.index = index;
-
-        this.createTexture()
-        this.createProgram()
-        this.createMesh()
+        this.sizes = sizes;
 
         this.extra = {
             x: 0,
             y: 0
         }
+
+        this.createTexture()
+        this.createProgram()
+        this.createMesh()
+        this.createBounds({sizes: this.sizes});
     }
 
 
@@ -33,7 +35,8 @@ export default class Media {
             vertex: planeVertex,
             fragment: planeFragment,
             uniforms: {
-                tMap: {value: this.texture}
+                tMap: {value: this.texture},
+                uAlpha: {value: 0}
             }
         })
     }

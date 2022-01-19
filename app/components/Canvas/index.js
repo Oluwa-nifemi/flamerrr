@@ -1,4 +1,4 @@
-import {Camera, Renderer, Transform} from 'ogl'
+import {Camera, Mesh, Plane, Program, Renderer, Transform} from 'ogl'
 
 import About from './About'
 import Home from './Home'
@@ -125,6 +125,22 @@ export default class Canvas {
 
     //Events
     onChangeStart() {
+        if (this.about) {
+            this.about.hide()
+        }
+
+        if (this.home) {
+            this.home.hide()
+        }
+
+        if (this.collections) {
+            this.collections.hide()
+        }
+
+        if (this.detail) {
+            this.detail.hide()
+        }
+
         this.detailsOrCollections = this.collections || this.detail;
 
         if (this.detailsOrCollections) {
@@ -143,22 +159,6 @@ export default class Canvas {
                     scene: this.scene
                 })
             }
-        }
-
-        if (this.about) {
-            this.about.hide()
-        }
-
-        if (this.home) {
-            this.home.hide()
-        }
-
-        if (this.collections) {
-            this.collections.hide()
-        }
-
-        if (this.detail) {
-            this.detail.hide()
         }
     }
 

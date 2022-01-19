@@ -4,7 +4,7 @@ import GSAP from "gsap";
 import Prefix from 'prefix'
 
 export default class Collections {
-    constructor({gl, scene}) {
+    constructor({gl, scene, transition, sizes}) {
         this.galleryElement = document.querySelector('.collections__gallery')
         this.galleryWrapperElement = document.querySelector('.collections__gallery__wrapper')
         this.mediaElements = [...document.querySelectorAll('.collections__gallery__media')];
@@ -12,6 +12,8 @@ export default class Collections {
         this.gl = gl;
         this.group = new Transform();
         this.scene = scene;
+        this.transition = transition;
+        this.sizes = sizes;
 
         this.createGeometry();
         this.createGallery();
@@ -38,6 +40,10 @@ export default class Collections {
             x: 0,
             y: 0
         }
+
+        this.onResize({sizes})
+
+        this.show()
     }
 
     createGeometry() {
@@ -52,7 +58,8 @@ export default class Collections {
                 index,
                 gl: this.gl,
                 scene: this.group,
-                geometry: this.geometry
+                geometry: this.geometry,
+                sizes: this.sizes
             })
         })
     }
@@ -97,7 +104,23 @@ export default class Collections {
 
     //Animations
     show() {
-        this.mediaScenes.forEach(media => media.show())
+        if (this.transition) {
+            const elementSrc = this.transition.element.element.src;
+            const targetMedia = this.mediaScenes.find(media => media.texture.image.src === elementSrc)
+            this.transition.animate(targetMedia).then(() => {
+                this.mediaScenes.forEach(media => {
+                    if (targetMedia === media) {
+                        targetMedia.program.uniforms.uAlpha = {
+                            value: 1
+                        }
+                    } else {
+                        media.show()
+                    }
+                })
+            })
+        } else {
+            this.mediaScenes.forEach(media => media.show())
+        }
     }
 
     hide() {

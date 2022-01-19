@@ -36,12 +36,15 @@ export default class Transition {
     createMesh() {
         this.mesh = new Mesh(this.gl, {geometry: this.geometry, program: this.program})
 
-        this.mesh.setParent(this.scene)
+        this.mesh.scale.x = this.element.mesh.scale.x;
+        this.mesh.scale.y = this.element.mesh.scale.y;
+        this.mesh.scale.z = this.element.mesh.scale.z;
 
         this.mesh.position.x = this.element.mesh.position.x;
         this.mesh.position.y = this.element.mesh.position.y;
-        this.mesh.scale.x = this.element.mesh.scale.x;
-        this.mesh.scale.y = this.element.mesh.scale.y;
+        this.mesh.position.z = this.element.mesh.position.z + 0.01;
+
+        this.mesh.setParent(this.scene)
     }
 
     //Animations
