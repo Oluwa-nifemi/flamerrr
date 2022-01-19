@@ -42,12 +42,18 @@
   left: 50%;
   position: absolute;
   top: 50%;
-  transform: translate(-44.7rem * 0.5, -50%);
+  --image-width: 33rem;
+  transform: translate(calc(-0.5 * (var(--image-width) - 6.5rem)), -50%);
 }
 
 .collections__gallery__link {
   display: block;
   margin: 0 5.3rem;
+  pointer-events: none;
+
+  &.is-active {
+    pointer-events: auto;
+  }
 
   &:first-child {
     margin-left: 0;
@@ -59,10 +65,10 @@
 }
 
 .collections__gallery__media {
-  height: 63.1rem;
   position: relative;
   visibility: hidden;
-  width: 44.7rem;
+  width: var(--image-width);
+  height: calc(1.409395973 * var(--image-width));
 }
 
 .collections__gallery__media__image {
