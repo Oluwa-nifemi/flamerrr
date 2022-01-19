@@ -17,10 +17,7 @@ export default class Media {
         this.createProgram()
         this.createMesh()
 
-        this.extra = {
-            x: 0,
-            y: 0
-        }
+        this.extra = 0
     }
 
     //Webgl setup
