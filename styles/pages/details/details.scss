@@ -38,6 +38,7 @@
   @extend %cover;
 
   object-fit: cover;
+  visibility: hidden;
 }
 
 .detail__information {

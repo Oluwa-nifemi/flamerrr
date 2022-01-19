@@ -3,6 +3,8 @@ import {Camera, Renderer, Transform} from 'ogl'
 import About from './About'
 import Home from './Home'
 import Collections from "./Collections";
+import Transition from "./Transition";
+import Detail from "./Detail";
 
 export default class Canvas {
     constructor({template}) {
@@ -55,7 +57,7 @@ export default class Canvas {
         this.scene = new Transform()
     }
 
-    //Page functions functions
+    //Home functions
     createHome() {
         this.home = new Home({
             gl: this.gl,
@@ -71,6 +73,7 @@ export default class Canvas {
         this.home = null
     }
 
+    //About functions
     createAbout() {
         this.about = new About({
             gl: this.gl,
@@ -86,6 +89,7 @@ export default class Canvas {
         this.about = null
     }
 
+    //Collection functions
     createCollections() {
         this.collections = new Collections({
             gl: this.gl,
@@ -101,8 +105,35 @@ export default class Canvas {
         this.collections = null
     }
 
+    //Detail functions
+    createDetail() {
+        this.detail = new Detail({
+            gl: this.gl,
+            scene: this.scene,
+            sizes: this.sizes
+        })
+    }
+
+    destroyDetail() {
+        if (!this.detail) return
+
+        this.detail.destroy()
+        this.detail = null
+    }
+
     //Events
     onChangeStart() {
+        this.transitionBetweenDetailAndCollections = this.collections || this.detail;
+
+        if (this.transitionBetweenDetailAndCollections) {
+            this.transition = new Transition({
+                element: this.collections.mediaScenes[this.collections.currentMediaElementIndex],
+                gl: this.gl,
+                sizes: this.sizes,
+                scene: this.scene
+            })
+        }
+
         if (this.about) {
             this.about.hide()
         }
@@ -113,6 +144,10 @@ export default class Canvas {
 
         if (this.collections) {
             this.collections.hide()
+        }
+
+        if (this.detail) {
+            this.detail.hide()
         }
     }
 
@@ -135,6 +170,12 @@ export default class Canvas {
             this.createHome()
         } else if (this.home) {
             this.destroyHome()
+        }
+
+        if (template === 'detail') {
+            this.createDetail()
+        } else if (this.home) {
+            this.destroyDetail()
         }
     }
 
@@ -169,6 +210,10 @@ export default class Canvas {
 
         if (this.collections) {
             this.collections.onResize(values)
+        }
+
+        if (this.detail) {
+            this.detail.onResize(values)
         }
     }
 
