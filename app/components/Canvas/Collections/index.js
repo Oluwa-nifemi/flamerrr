@@ -99,7 +99,7 @@ export default class Collections {
 
     onWheel({pixelX, pixelY}) {
         //Calculate new target based on distance scrolled
-        this.scroll.target += pixelY
+        this.scroll.target -= pixelY
     }
 
     //Animations
@@ -164,6 +164,12 @@ export default class Collections {
 
     //On change media element
     handleElementChange(index) {
+        const previousElement = this.mediaScenes[this.currentMediaElementIndex];
+        previousElement.hideActive()
+
+        const currentElement = this.mediaScenes[index];
+        currentElement.showActive()
+
         this.currentMediaElementIndex = index;
 
         //Hide currently active collection
@@ -175,6 +181,11 @@ export default class Collections {
         this.collectionElements[activeCollection].classList.add(this.collectionElementActiveClass)
 
         this.titlesElement.style[this.transformPrefix] = `translateY(-${25 * activeCollection}%) translate(-50%, -50%) rotate(-90deg)`
+
+        document.querySelector('.collections__gallery__link.is-active').classList.remove('is-active');
+        const activeLink = document.querySelector(`.collections__gallery__link:nth-child(${index + 1})`);
+
+        activeLink.classList.add('is-active')
     }
 
     destroy() {

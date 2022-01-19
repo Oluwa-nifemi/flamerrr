@@ -1,7 +1,8 @@
-import planeFragment from "../../../shaders/home-fragment.glsl";
+import planeFragment from "../../../shaders/collections-fragment.glsl";
 import planeVertex from "../../../shaders/plane-vertex.glsl";
 import {Mesh, Program} from "ogl";
 import GSAP from "gsap";
+import {remToPx} from "../../../utils/remToPx";
 
 export default class Media {
     constructor({element, gl, scene, index, geometry, sizes}) {
@@ -27,16 +28,21 @@ export default class Media {
     //Webgl functions
     createTexture() {
         const image = this.element.querySelector('img');
+        this.imageUrl = image.getAttribute('data-src');
         this.texture = window.TEXTURES[image.getAttribute('data-src')];
     }
 
     createProgram() {
+        const dimensions = window.DIMENSIONS[this.imageUrl]
+
         this.program = new Program(this.gl, {
             vertex: planeVertex,
             fragment: planeFragment,
             uniforms: {
                 tMap: {value: this.texture},
-                uAlpha: {value: 0}
+                uAlpha: {value: 0},
+                uImageSize: {value: [dimensions.width, dimensions.height]},
+                uResolution: {value: [remToPx(33), remToPx(46.510067114)]}
             }
         })
     }
@@ -106,13 +112,25 @@ export default class Media {
         GSAP.fromTo(this.program.uniforms.uAlpha, {
             value: 0
         }, {
-            value: 1
+            value: this.index === 0 ? 1 : 0.4
         })
     }
 
     hide() {
         GSAP.to(this.program.uniforms.uAlpha, {
             value: 0
+        })
+    }
+
+    showActive() {
+        GSAP.to(this.program.uniforms.uAlpha, {
+            value: 1
+        })
+    }
+
+    hideActive() {
+        GSAP.to(this.program.uniforms.uAlpha, {
+            value: 0.4
         })
     }
 }

@@ -16,6 +16,7 @@ export default class Preloader extends Component {
         this.canvas = canvas
 
         window.TEXTURES = {}
+        window.DIMENSIONS = {}
 
         this.createLoader()
     }
@@ -55,6 +56,10 @@ export default class Preloader extends Component {
                 texture.image = image;
 
                 window.TEXTURES[imageUrl] = texture;
+                window.DIMENSIONS[imageUrl] = {
+                    width: image.naturalWidth,
+                    height: image.naturalHeight
+                }
 
                 this.onAssetLoaded()
             }
