@@ -1,7 +1,7 @@
 import GSAP from 'gsap'
 import {Mesh, Plane, Program, Texture} from 'ogl'
 
-import fragment from 'shaders/home-fragment.glsl'
+import fragment from 'shaders/collections-fragment.glsl'
 import vertex from 'shaders/plane-vertex.glsl'
 
 export default class Detail {
@@ -11,6 +11,8 @@ export default class Detail {
         this.scene = scene
         this.sizes = sizes
         this.transition = transition
+
+        this.bounds = this.element.getBoundingClientRect()
 
         this.createGeometry()
         this.createTexture()
@@ -29,16 +31,26 @@ export default class Detail {
 
     //Webgl setup
     createTexture() {
-        this.texture = window.TEXTURES[this.element.getAttribute('data-src')];
+        this.imageUrl = this.element.getAttribute('data-src');
+        this.texture = window.TEXTURES[this.imageUrl];
     }
 
     createProgram() {
+        const dimensions = window.DIMENSIONS[this.imageUrl]
+
+        console.log('detail', JSON.stringify({
+            uImageSize: {value: [dimensions.width, dimensions.height]},
+            uResolution: {value: [this.bounds.width, this.bounds.height]}
+        }))
+
         this.program = new Program(this.gl, {
             fragment,
             vertex,
             uniforms: {
                 uAlpha: {value: 0},
-                tMap: {value: this.texture}
+                tMap: {value: this.texture},
+                uImageSize: {value: [dimensions.width, dimensions.height]},
+                uResolution: {value: [this.bounds.width, this.bounds.height]}
             }
         })
     }
@@ -56,8 +68,6 @@ export default class Detail {
     createBounds({sizes}) {
         this.sizes = sizes
 
-        this.bounds = this.element.getBoundingClientRect()
-
         this.updateScale()
         this.updateX()
         this.updateY()
@@ -66,10 +76,13 @@ export default class Detail {
     //Animations
     showTransition() {
         if (this.transition) {
-            this.transition.animate({mesh: this.mesh})
-                .then(() => {
-                    GSAP.set(this.program.uniforms.uAlpha, {value: 1})
-                })
+            this.transition.animate({
+                mesh: this.mesh,
+                imageUrl: this.imageUrl,
+                bounds: this.bounds
+            }).then(() => {
+                GSAP.set(this.program.uniforms.uAlpha, {value: 1})
+            })
         } else {
             GSAP.to(this.program.uniforms.uAlpha, {
                 value: 1
@@ -122,5 +135,9 @@ export default class Detail {
         this.updateScale()
         this.updateX()
         this.updateY()
+    }
+
+    destroy() {
+        this.scene.removeChild(this.mesh)
     }
 }

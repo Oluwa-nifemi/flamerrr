@@ -183,7 +183,7 @@ export default class Canvas {
 
         if (template === 'detail') {
             this.createDetail()
-        } else if (this.home) {
+        } else if (this.detail) {
             this.destroyDetail()
         }
     }
