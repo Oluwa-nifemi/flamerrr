@@ -97,7 +97,7 @@ export default class Collections {
 
     }
 
-    onWheel({pixelX, pixelY}) {
+    onWheel({pixelY}) {
         //Calculate new target based on distance scrolled
         this.scroll.target -= pixelY
     }
@@ -107,7 +107,19 @@ export default class Collections {
         if (this.transition) {
             const elementSrc = this.transition.element.element.src;
             const targetMedia = this.mediaScenes.find(media => media.texture.image.src === elementSrc)
-            this.transition.animate(targetMedia).then(() => {
+
+            const scrollDistance = (targetMedia.mesh.position.x / this.sizes.width) * window.innerWidth;
+            this.scroll.current = this.scroll.target = -scrollDistance
+
+            this.transition.animate({
+                mesh: {
+                    ...targetMedia.mesh,
+                    position: {
+                        x: 0,
+                        y: targetMedia.mesh.position.y
+                    }
+                }
+            }).then(() => {
                 this.mediaScenes.forEach(media => {
                     if (targetMedia === media) {
                         targetMedia.program.uniforms.uAlpha = {
