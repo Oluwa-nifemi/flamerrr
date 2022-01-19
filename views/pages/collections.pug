@@ -20,8 +20,8 @@ block content
           .collections__gallery
               .collections__gallery__wrapper
                   each collection, index in collections
-                      each product in collection.data.products
-                          a.collections__gallery__link(href=Link(product.product))
+                      each product, product_index in collection.data.products
+                          a(href=Link(product.product), class=`collections__gallery__link ${product_index === 0 ? 'is-active' : ''}`)
                               figure.collections__gallery__media(data-collection=index)
                                   img.collections__gallery__media__image(alt=product.product.data.image.alt data-src=product.product.data.image.url)
 
