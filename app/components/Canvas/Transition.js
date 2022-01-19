@@ -1,4 +1,4 @@
-import planeFragment from "../../shaders/plane-fragment.glsl";
+import planeFragment from "../../shaders/collections-fragment.glsl";
 import planeVertex from "../../shaders/plane-vertex.glsl";
 import {Mesh, Plane, Program, Texture} from "ogl";
 import GSAP from "gsap";
@@ -20,11 +20,16 @@ export default class Transition {
 
     //Webgl functions
     createProgram() {
+        const dimensions = window.DIMENSIONS[this.element.imageUrl]
+
         this.program = new Program(this.gl, {
             vertex: planeVertex,
             fragment: planeFragment,
             uniforms: {
-                tMap: {value: this.element.texture}
+                tMap: {value: this.element.texture},
+                uAlpha: {value: 1},
+                uImageSize: {value: [dimensions.width, dimensions.height]},
+                uResolution: {value: [this.element.bounds.width, this.element.bounds.height]}
             }
         })
     }
