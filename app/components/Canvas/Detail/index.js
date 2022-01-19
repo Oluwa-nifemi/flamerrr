@@ -1,15 +1,16 @@
 import GSAP from 'gsap'
 import {Mesh, Plane, Program, Texture} from 'ogl'
 
-import fragment from 'shaders/plane-fragment.glsl'
+import fragment from 'shaders/home-fragment.glsl'
 import vertex from 'shaders/plane-vertex.glsl'
 
 export default class Detail {
-    constructor({gl, scene, sizes}) {
+    constructor({gl, scene, sizes, transition}) {
         this.element = document.querySelector('.detail__media__image');
         this.gl = gl
         this.scene = scene
         this.sizes = sizes
+        this.transition = transition
 
         this.createGeometry()
         this.createTexture()
@@ -17,6 +18,8 @@ export default class Detail {
         this.createMesh()
 
         this.onResize({sizes: this.sizes})
+
+        this.showTransition()
     }
 
     createGeometry() {
@@ -34,7 +37,7 @@ export default class Detail {
             fragment,
             vertex,
             uniforms: {
-                uAlpha: {value: 1},
+                uAlpha: {value: 0},
                 tMap: {value: this.texture}
             }
         })
@@ -58,17 +61,20 @@ export default class Detail {
         this.updateScale()
         this.updateX()
         this.updateY()
-        console.log(this.mesh)
-
     }
 
     //Animations
-    show() {
-        GSAP.fromTo(this.program.uniforms.uAlpha, {
-            value: 0
-        }, {
-            value: 1
-        })
+    showTransition() {
+        if (this.transition) {
+            this.transition.animate({mesh: this.mesh})
+                .then(() => {
+                    GSAP.set(this.program.uniforms.uAlpha, {value: 1})
+                })
+        } else {
+            GSAP.to(this.program.uniforms.uAlpha, {
+                value: 1
+            })
+        }
     }
 
     hide() {

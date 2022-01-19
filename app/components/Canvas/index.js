@@ -94,7 +94,8 @@ export default class Canvas {
         this.collections = new Collections({
             gl: this.gl,
             scene: this.scene,
-            sizes: this.sizes
+            sizes: this.sizes,
+            transition: this.transition
         })
     }
 
@@ -110,7 +111,8 @@ export default class Canvas {
         this.detail = new Detail({
             gl: this.gl,
             scene: this.scene,
-            sizes: this.sizes
+            sizes: this.sizes,
+            transition: this.transition
         })
     }
 
@@ -123,15 +125,24 @@ export default class Canvas {
 
     //Events
     onChangeStart() {
-        this.transitionBetweenDetailAndCollections = this.collections || this.detail;
+        this.detailsOrCollections = this.collections || this.detail;
 
-        if (this.transitionBetweenDetailAndCollections) {
-            this.transition = new Transition({
-                element: this.collections.mediaScenes[this.collections.currentMediaElementIndex],
-                gl: this.gl,
-                sizes: this.sizes,
-                scene: this.scene
-            })
+        if (this.detailsOrCollections) {
+            if (this.collections) {
+                this.transition = new Transition({
+                    element: this.collections.mediaScenes[this.collections.currentMediaElementIndex],
+                    gl: this.gl,
+                    sizes: this.sizes,
+                    scene: this.scene
+                })
+            } else {
+                this.transition = new Transition({
+                    element: this.detail,
+                    gl: this.gl,
+                    sizes: this.sizes,
+                    scene: this.scene
+                })
+            }
         }
 
         if (this.about) {
