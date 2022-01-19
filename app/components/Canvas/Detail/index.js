@@ -38,11 +38,6 @@ export default class Detail {
     createProgram() {
         const dimensions = window.DIMENSIONS[this.imageUrl]
 
-        console.log('detail', JSON.stringify({
-            uImageSize: {value: [dimensions.width, dimensions.height]},
-            uResolution: {value: [this.bounds.width, this.bounds.height]}
-        }))
-
         this.program = new Program(this.gl, {
             fragment,
             vertex,
